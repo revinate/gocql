@@ -27,6 +27,8 @@ func goType(t TypeInfo) reflect.Type {
 		return reflect.TypeOf(*new(int64))
 	case TypeTimestamp:
 		return reflect.TypeOf(*new(time.Time))
+	case TypeDate:
+		return reflect.TypeOf(*new(time.Time))
 	case TypeBlob:
 		return reflect.TypeOf(*new([]byte))
 	case TypeBoolean:

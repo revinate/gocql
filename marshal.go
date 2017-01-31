@@ -141,6 +141,8 @@ func Unmarshal(info TypeInfo, data []byte, value interface{}) error {
 		return unmarshalDecimal(info, data, value)
 	case TypeTimestamp:
 		return unmarshalTimestamp(info, data, value)
+	case TypeDate:
+		return unmarshalDate(info, data, value)
 	case TypeList, TypeSet:
 		return unmarshalList(info, data, value)
 	case TypeMap:
@@ -1111,6 +1113,23 @@ func unmarshalTimestamp(info TypeInfo, data []byte, value interface{}) error {
 	switch rv.Type().Kind() {
 	case reflect.Int64:
 		rv.SetInt(decBigInt(data))
+		return nil
+	}
+	return unmarshalErrorf("can not unmarshal %s into %T", info, value)
+}
+
+func unmarshalDate(info TypeInfo, data []byte, value interface{}) error {
+	switch v := value.(type) {
+	case Unmarshaler:
+		return v.UnmarshalCQL(info, data)
+	case *time.Time:
+		if len(data) == 0 {
+			*v = time.Time{}
+			return nil
+		}
+		daysSinceEpoch := (decInt(data) << 1) >> 1
+		secondsSinceEpoch := daysSinceEpoch * 24 * 60 * 60
+		*v = time.Unix(int64(secondsSinceEpoch), 0).In(time.UTC)
 		return nil
 	}
 	return unmarshalErrorf("can not unmarshal %s into %T", info, value)

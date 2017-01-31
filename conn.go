@@ -20,9 +20,9 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/gocql/gocql/internal/lru"
+	"github.com/revinate/gocql/internal/lru"
 
-	"github.com/gocql/gocql/internal/streams"
+	"github.com/revinate/gocql/internal/streams"
 )
 
 var (
